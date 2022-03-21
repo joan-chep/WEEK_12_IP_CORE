@@ -1,0 +1,219 @@
+---
+title: "R Fundamentals"
+author: "Joan Chepkwony"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Project: Predicting whether a user will Click an Ad or not
+
+### 1.1.1 Defining the Question
+Using R programming to identify which individuals are the most likely to click on the ads.
+
+### 1.1.2 Understanding the Context
+ Cryptography course was created by a Kenyan entrepreneur and would want to advertise it on her blog. She currently targets audiences originating from various countries. In the past, she ran ads to advertise a related course on the same blog and collected dat on the process. Using R programming language we would help her identify which individuals are most likely to click on her ads.
+
+### 1.1.4 Experimental Design Taken
+Installing packages and loading libraries needed
+Loading the dataset
+Data Cleaning
+Exploratory Data Analysis
+Conclusion.
+
+
+### 1.2 Installing & Loading Necessary Packages
+```{r}
+library(tidyverse)
+install.packages("ggplot2")
+```
+
+
+### 1.3 Loading the dataset
+```{r}
+# Reading the csv url then loading it
+df<- read.csv("http://bit.ly/IPAdvertisingData")
+```
+
+```{r}
+#previewing the dataset
+print(head(df))
+print(tail(df))
+```
+
+```{r}
+# checking data types 
+str(df)
+```
+## Cleaning the Dataset
+```{r}
+#Changing the timestamp datatype from factor to date_time
+df$Timestamp <- as.Date(df$Timestamp, format = "%Y-%m-%s-%h-%m-%s")
+```
+```{r}
+# checking the new datatype for timestamp column
+sapply(df, class)
+```
+```{r}
+# checking for missing data
+#is.na(df)
+colSums(is.na(df))
+#the data doesn't have missing data
+```
+
+```{r}
+#checking the columns of the dataframe
+colnames(df)
+```
+
+
+```{r}
+#Checking shape of dataset
+dim(df)
+# the dataset has 1000 rows and 10 columns
+```
+
+```{r}
+# checking for duplicates 
+#duplicated(df)
+df[duplicated(df)]
+```
+
+## Exploratory Data Analys is
+###Univariate Analysis
+Measures of Central Tendancy
+
+```{r}
+mean(df$Age)
+median(df$Age)
+```
+
+```{r}
+#mode
+age_x <- df$Age
+#sort(age_x)
+names(table(age_x))[table(age_x)==max(table(age_x))]
+
+```
+```{r}
+# visualizing the age distribution using histogram
+hist(df$Age, col = c('grey'))
+```
+There is a higher tendency that a person aged between 30 and 35 years of age accessed her ads.
+
+- The age distribution is right skewed
+- The respondents on the website are mostly 25-40 years old
+- The mean age is 36
+- The median age is 35
+
+```{r}
+# visualizing the age distribution using bar graph
+# fetching the age column
+age <- df$Age
+# applying the table() function the compute the frequency of the Age column
+age_frequency <- table(age)
+age_frequency
+```
+```{r}
+
+barplot(age_frequency, col = 'magenta')
+```
+Most people accessing her ads where aged 31 years.
+
+
+# Ad_Topic_Line
+
+```{r}
+ad_topic_line <- df$`Ad Topic Line`
+levels(unique(ad_topic_line))
+#factor(unique(ad_topic_line))
+
+```
+#City
+Measure of Central Tendancy
+
+```{r}
+# City where the user is located
+# measure of central tendency
+length(levels(df$City))
+#mode (the modal cities in the dataset)
+city_x <- df$City
+#sort(city_x). This code gives an ordered list of all the elements in the cities column
+names(table(city_x))[table(city_x)==max(table(city_x))]
+```
+The most popular cities in the dataset are: "Lisamouth"    "Williamsport"
+
+
+#Gender
+
+```{r}
+# gender of the user
+# fetching the Male column
+gender <- df$Male
+# applying the table() function to compute the frequency of the Male column
+gender_frequency <- table(gender)
+gender_frequency
+```
+1 represented the males and 0 represented the females.
+
+```{r}
+# visualizing the Gender distribution using bar graph
+barplot(gender_frequency, col = 'yellow')
+```
+most of the people who accessed her ads were females.
+
+# Country
+
+```{r}
+# Country where the user belongs
+# measures of central tendency
+country_x <- df$Country
+# levels(country_x) code gives the names of the countries
+length(levels(country_x))
+#the modal countries in the dataset
+names(table(country_x))[table(country_x)==max(table(country_x))]
+```
+The most popular countries are:  "Czech Republic" "France" 
+
+
+## BIVARIATE ANALYSIS
+
+Scatterplots of a few pairs of variables
+
+Time spent on the site vs age of the user
+
+```{r}
+library(tidyverse)
+
+
+```{r}
+clicked_vs_gender <- c(231, 250, 269, 250)
+# bargraph with added parameters
+barplot(clicked_vs_gender, main = 'clicked_vs_gender', xlab = 'label',ylab = 'count', names.arg = c('Male&Clicked Male&No-click Female&Clicked Female&No-click'), col = 'darkgreen', horiz = FALSE)
+```
+```
+##Time spent on the site vs age of the user
+
+```{r}
+#libraries\
+library(ggplot2)
+#creating the data
+time_on_site <- df$`Daily Time Spent on Site`
+age <- df$Age
+data <- data.frame(time_on_site,age)
+#plot
+ggplot(data, aes(x=time_on_site, y=age)) + geom_point()
+```
+
+
+
+
+
+
